@@ -28,6 +28,7 @@ public class Escalonador {
 	
 	public void novoProcesso(BCP bcp) {
 		filaProntos.add(bcp);
+		System.out.println("Carregando "+ bcp.getNome());
 	}
 	
 	public void executar() 
@@ -42,30 +43,23 @@ public class Escalonador {
 			
 			verificaCreditosFilaProntos();
 			
-			System.out.println();
-			System.out.println("Ordenando fila de prontos");
 			ordenaFilaProntos();
 			
-			imprimeFilas();
-			
 			BCP maiorPrioridade = filaProntos.get(0);
+			System.out.println("Executando "+ maiorPrioridade.getNome());
 			
-			for (int i = 0; i < quantum; i++) 
+			for (int i = 1; i <= quantum; i++) 
 			{	
 				if (!maiorPrioridade.temCreditos()) {
-					System.out.println("Fim dos créditos");
+					imprimeMensagemInterrupcao(maiorPrioridade.getNome(), i-1);
 					break;
 				}
 				
 				String comando = maiorPrioridade.executar();
 				
-				System.out.println();
-				System.out.println("Executando comando");
-				System.out.println(maiorPrioridade.toStringSimplificado());
-				System.out.println(comando);
-				
 				if (comando.equals("SAIDA")) {
 					filaProntos.remove(0);
+					System.out.println(maiorPrioridade.getNome() +" terminado. "+ maiorPrioridade.imprimeVariaveis());
 					break;
 				}
 				else if (comando.equals("E/S")) 
@@ -73,7 +67,8 @@ public class Escalonador {
 					maiorPrioridade.bloquear(3);
 					filaProntos.remove(0);
 					filaBloqueados.add(maiorPrioridade);
-					System.out.println("Processo bloqueado");
+					System.out.println("E/S iniciada em "+ maiorPrioridade.getNome());
+					imprimeMensagemInterrupcao(maiorPrioridade.getNome(), i);
 					break;
 				}
 				else if (comando.substring(1, 2).equals("="))
@@ -82,19 +77,17 @@ public class Escalonador {
 						maiorPrioridade.setX(Integer.parseInt(comando.substring(2)));
 					else
 						maiorPrioridade.setY(Integer.parseInt(comando.substring(2)));
+				}				
+				if (i == quantum && maiorPrioridade.estaExecutando()) {
+					imprimeMensagemInterrupcao(maiorPrioridade.getNome(), quantum);
+					maiorPrioridade.interromper();
 				}
-				
-				if (i == quantum-1)
-					System.out.println("Fim do quantum");
-			}
-				
-			maiorPrioridade.interromper();
+			}					
 		}
 	}
 	
-	private void imprimeFilas() {
-		filaProntos.forEach((x) -> System.out.println(x.toString()));
-		filaBloqueados.forEach((b) -> System.out.println(b.toString()));
+	private void imprimeMensagemInterrupcao(String nomeProcesso, int qtdInstrucoes) {
+		System.out.println("Interrompendo "+ nomeProcesso +" após "+ qtdInstrucoes + ((qtdInstrucoes) > 1 ? " instruções" : " instrução"));
 	}
 	
 	private void diminuiTempoFilaBloqueio() {
@@ -107,10 +100,9 @@ public class Escalonador {
 	}
 	
 	private void verificaCreditosFilaProntos() {
-		if(filaProntos.stream().filter((b) -> b.temCreditos()).count() == 0) {
-			System.out.println("Redistribuindo créditos");
+		if(filaProntos.stream().filter((b) -> b.temCreditos()).count() == 0) 
 			filaProntos.forEach((b) -> b.redistribuirCreditos());
-		}
+		
 	}
 	
 	private void ordenaFilaProntos() {

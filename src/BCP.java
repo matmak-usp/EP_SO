@@ -45,8 +45,7 @@ public class BCP {
 	}
 	
 	public void interromper() {
-		if (this.estado == Estado.EXECUTANDO)
-			this.estado = Estado.PRONTO;
+		this.estado = Estado.PRONTO;
 	}
 	
 	public void diminuiTempoBloqueio() {
@@ -80,5 +79,17 @@ public class BCP {
 	
 	public void setY(int y) {
 		this.Y = y;
+	}
+	
+	public String imprimeVariaveis() {
+		return "X="+ this.X +" Y="+this.Y; 
+	}
+	
+	public String getNome() {
+		return "TESTE-"+PID;
+	}
+	
+	public boolean estaExecutando() {
+		return this.estado == Estado.EXECUTANDO;
 	}
 }

@@ -30,7 +30,6 @@ public class Processo {
 				comandos.add(comando);
 			
 			leitor.close();
-			System.out.println(comandos);
 		} 
 		catch (FileNotFoundException e) {
 			e.printStackTrace();

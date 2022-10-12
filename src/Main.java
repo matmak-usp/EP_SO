@@ -11,15 +11,17 @@ public class Main {
 	public static void main(String[] args) {
 		Escalonador escalonador;
 		PrintStream out;
+		int quantum = 0;
 		
 		try {
-			out = new PrintStream(new FileOutputStream("output.txt"));
-			System.setOut(out);
 			
 			File quantumFile = new File(System.getProperty("user.dir") + File.separator + "quantum.txt");
 			BufferedReader leitor = new BufferedReader(new FileReader(quantumFile));
-			int quantum = Integer.parseInt(leitor.readLine());
+			quantum = Integer.parseInt(leitor.readLine());
 			escalonador = new Escalonador(quantum);
+			
+			out = new PrintStream(new FileOutputStream("log"+ String.format("%02d", quantum) +".txt"));
+			System.setOut(out);
 			
 			File listaDePrioridades = new File(System.getProperty("user.dir") + File.separator + "prioridades.txt");
 			leitor = new BufferedReader(new FileReader(listaDePrioridades));
@@ -41,7 +43,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Escalonador finalizado");
+		System.out.println("QUANTUM: "+ quantum);
 	}
 
 }

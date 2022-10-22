@@ -5,8 +5,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
+	
+	//static Map<Integer, Integer> qtdTrocasPorProcesso = new HashMap<Integer, Integer>();
+	static Map<Integer, List<Integer>> processos = new HashMap<Integer, List<Integer>>();
 
 	public static void main(String[] args) {
 		Escalonador escalonador;
@@ -44,6 +50,16 @@ public class Main {
 		}
 		
 		System.out.println("QUANTUM: "+ quantum);
+		
+		double qtdTotalInstrucoes = 0;
+		double qtdQuanta = 0;		
+		for (Map.Entry<Integer, List<Integer>> entry : processos.entrySet()) {	        
+			qtdTotalInstrucoes += entry.getValue().stream().mapToInt(a -> a).sum();
+			qtdQuanta += entry.getValue().stream().mapToInt(a -> a).count();
+	    }
+		
+		System.out.println("Media de instrucoes por quantum: "+ qtdTotalInstrucoes / qtdQuanta);
+		System.out.println("Media de trocas de processos: "+ (double) qtdQuanta / processos.size());
 	}
 
 }

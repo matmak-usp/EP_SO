@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Escalonador {
@@ -24,11 +25,13 @@ public class Escalonador {
 		this.filaProntos = new ArrayList<BCP>();
 		this.filaBloqueados = new LinkedList<BCP>();
 		this.quantum = quantum;
+		
 	}
 	
 	public void novoProcesso(BCP bcp) {
 		filaProntos.add(bcp);
 		System.out.println("Carregando "+ bcp.getNome());
+		Main.processos.put(bcp.getPID(), new ArrayList<Integer>());
 	}
 	
 	public void executar() 
@@ -48,14 +51,15 @@ public class Escalonador {
 			BCP maiorPrioridade = filaProntos.get(0);
 			System.out.println("Executando "+ maiorPrioridade.getNome());
 			
-			for (int i = 1; i <= quantum; i++) 
+			int instrucoesExecutadas = 0;
+			while (instrucoesExecutadas < quantum) 
 			{	
-				if (!maiorPrioridade.temCreditos()) {
-					imprimeMensagemInterrupcao(maiorPrioridade.getNome(), i-1);
+				if (!maiorPrioridade.temCreditos()) 
 					break;
-				}
+				
 				
 				String comando = maiorPrioridade.executar();
+				instrucoesExecutadas++;
 				
 				if (comando.equals("SAIDA")) {
 					filaProntos.remove(0);
@@ -68,7 +72,6 @@ public class Escalonador {
 					filaProntos.remove(0);
 					filaBloqueados.add(maiorPrioridade);
 					System.out.println("E/S iniciada em "+ maiorPrioridade.getNome());
-					imprimeMensagemInterrupcao(maiorPrioridade.getNome(), i);
 					break;
 				}
 				else if (comando.substring(1, 2).equals("="))
@@ -78,11 +81,13 @@ public class Escalonador {
 					else
 						maiorPrioridade.setY(Integer.parseInt(comando.substring(2)));
 				}				
-				if (i == quantum && maiorPrioridade.estaExecutando()) {
-					imprimeMensagemInterrupcao(maiorPrioridade.getNome(), quantum);
-					maiorPrioridade.interromper();
-				}
-			}					
+				
+			}
+						
+			maiorPrioridade.interromper();
+			imprimeMensagemInterrupcao(maiorPrioridade.getNome(), instrucoesExecutadas);
+			if (instrucoesExecutadas != 0)
+				Main.processos.get(maiorPrioridade.getPID()).add(instrucoesExecutadas);
 		}
 	}
 	

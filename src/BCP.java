@@ -89,6 +89,10 @@ public class BCP {
 		return "TESTE-"+PID;
 	}
 	
+	public int getPID() {
+		return PID;
+	}
+	
 	public boolean estaExecutando() {
 		return this.estado == Estado.EXECUTANDO;
 	}

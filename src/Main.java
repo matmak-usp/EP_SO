@@ -57,7 +57,7 @@ public class Main {
 			qtdTotalInstrucoes += entry.getValue().stream().mapToInt(a -> a).sum();
 			qtdQuanta += entry.getValue().stream().mapToInt(a -> a).count();
 	    }
-		
+
 		System.out.println("Media de instrucoes por quantum: "+ qtdTotalInstrucoes / qtdQuanta);
 		System.out.println("Media de trocas de processos: "+ (double) qtdQuanta / processos.size());
 	}

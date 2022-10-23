@@ -96,4 +96,12 @@ public class BCP {
 	public boolean estaExecutando() {
 		return this.estado == Estado.EXECUTANDO;
 	}
+	
+	public void terminar() {
+		this.estado = Estado.TERMINOU;
+	}
+	
+	public boolean terminou() {
+		return this.estado == Estado.TERMINOU;
+	}
 }

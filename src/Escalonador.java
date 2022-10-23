@@ -63,6 +63,7 @@ public class Escalonador {
 				
 				if (comando.equals("SAIDA")) {
 					filaProntos.remove(0);
+					maiorPrioridade.terminar();
 					System.out.println(maiorPrioridade.getNome() +" terminado. "+ maiorPrioridade.imprimeVariaveis());
 					break;
 				}
@@ -84,10 +85,12 @@ public class Escalonador {
 				
 			}
 						
-			maiorPrioridade.interromper();
-			imprimeMensagemInterrupcao(maiorPrioridade.getNome(), instrucoesExecutadas);
-			if (instrucoesExecutadas != 0)
-				Main.processos.get(maiorPrioridade.getPID()).add(instrucoesExecutadas);
+			if (!maiorPrioridade.terminou()) {
+				maiorPrioridade.interromper();
+				imprimeMensagemInterrupcao(maiorPrioridade.getNome(), instrucoesExecutadas);				
+			}
+				
+			Main.processos.get(maiorPrioridade.getPID()).add(instrucoesExecutadas);
 		}
 	}
 	
